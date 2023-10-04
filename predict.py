@@ -14,9 +14,8 @@ class Predictor(BasePredictor):
 
     def predict(
         self,
-        video: Path = Input(description="Path of the input video or image folder.", default='inputs/object_removal/bmx-trees'),
-        mask: Path = Input(description="Path of the mask(s) or mask folder.", default='inputs/object_removal/bmx-trees_mask'),
-        # output: Path = Input(description="Output folder.", default='results'), # not neccessary for Replicate
+        video: Path = Input(description="Input video"),
+        mask: Path = Input(description="Mask"),
         resize_ratio: float = Input(description="Resize scale for processing video.", default=1.0),
         height: int = Input(description="Height of the processing video.", default=-1),
         width: int = Input(description="Width of the processing video.", default=-1),
@@ -33,9 +32,6 @@ class Predictor(BasePredictor):
         
     ) -> List[Path]:
         """Run a single prediction on the model"""
-        # processed_input = preprocess(image)
-        # output = self.model(processed_image, scale)
-        # return postprocess(output)
         output = "results"
         save_frames=False
         
