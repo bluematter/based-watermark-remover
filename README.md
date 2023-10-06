@@ -46,6 +46,9 @@
 
 </div>
 
+## Demo
+[![Replicate](https://replicate.com/jd7h/ProPainter/badge)](https://replicate.com/jd7h/ProPainter)
+
 
 ## Update
 - **2023.09.24**: We remove the watermark removal demos officially to prevent the misuse of our work for unethical purposes.
