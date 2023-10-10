@@ -16,6 +16,7 @@ class Predictor(BasePredictor):
         self,
         video: Path = Input(description="Input video"),
         mask: Path = Input(description="Mask"),
+        return_input_video: bool = Input(description="Return the input video in the output.", default=False),
         resize_ratio: float = Input(description="Resize scale for processing video.", default=1.0),
         height: int = Input(description="Height of the processing video.", default=-1),
         width: int = Input(description="Width of the processing video.", default=-1),
@@ -36,4 +37,6 @@ class Predictor(BasePredictor):
         save_frames=False
         
         in_video, out_video = propainter.infer(self.device, self.fix_raft, self.fix_flow_complete, self.model, str(video), str(mask), output, resize_ratio, height, width, mask_dilation, ref_stride, neighbor_length, subvideo_length, raft_iter, mode, scale_h, scale_w, save_fps, save_frames, fp16)
-        return [Path(in_video), Path(out_video)]
+        if return_input_video:
+            return [Path(in_video), Path(out_video)]
+        return [Path(out_video)]
