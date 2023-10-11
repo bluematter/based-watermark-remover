@@ -80,16 +80,19 @@ def read_mask(mpath, length, size, flow_mask_dilates=8, mask_dilates=5):
     flow_masks = []
     
     if mpath.endswith(('jpg', 'jpeg', 'png', 'JPG', 'JPEG', 'PNG')): # input single img path
-        print("Interpreting mask as a single static file...")
+        print("Processing image mask...")
         masks_img = [Image.open(mpath)]
     elif mpath.endswith(('mp4', 'mov', 'avi', 'MP4', 'MOV', 'AVI')): # input mask is a video
-        print("Interpreting mask as a video...")
+        print("Processing video mask...")
         video_name = os.path.basename(mpath)[:-4]
         vframes, _, _ = torchvision.io.read_video(filename=mpath, pts_unit='sec') # RGB
         frames = list(vframes.numpy())
         masks_img = [Image.fromarray(f) for f in frames]
-    else:  
-        raise ValueError("ProPainter via cog only supports static masks as .jpg or .png, or video masks as .avi and .mp4.")
+    else:	
+        print("Processing folder mask...")
+        mnames = sorted(os.listdir(mpath))
+        for mp in mnames:
+            masks_img.append(Image.open(os.path.join(mpath, mp)))
 
     for mask_img in masks_img:
         if size is not None:
