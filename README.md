@@ -33,6 +33,9 @@
         <a href="https://youtu.be/92EHfgCO5-Q" target='_blank'>
         <img src="https://img.shields.io/badge/Demo%20Video-%23FF0000.svg?logo=YouTube&logoColor=white">
         </a>
+        <a href="https://replicate.com/jd7h/ProPainter" rel="nofollow">
+        <img src="https://img.shields.io/static/v1?label=Replicate&message=Demo+%26+Cloud+API&color=blue">
+        </a>
         <img src="https://api.infinitescript.com/badgen/count?name=sczhou/ProPainter">
     </h4>
 </div>
@@ -45,10 +48,6 @@
 ---
 
 </div>
-
-## Demo
-[![Replicate](https://replicate.com/jd7h/ProPainter/badge)](https://replicate.com/jd7h/ProPainter)
-
 
 ## Update
 - **2023.09.24**: We remove the watermark removal demos officially to prevent the misuse of our work for unethical purposes.
