@@ -8,7 +8,6 @@ build:
   # a list of ubuntu apt packages to install
   system_packages:
     - "libgl1-mesa-glx"
-  #   - "libglib2.0-0"
 
   # python version in the form '3.11' or '3.11.4'
   python_version: "3.8"
@@ -31,11 +30,6 @@ build:
     - "torch==2.0.1"
     - "torchvision==0.15.2"
     - "yapf==0.40.2"
-
-  # commands run after the environment is setup
-  # run:
-  #   - "echo env is ready!"
-  #   - "echo another command if needed"
 
 # predict.py defines how predictions are run on your model
 predict: "predict.py:Predictor"
