@@ -4,7 +4,7 @@
 from typing import List
 
 from cog import BasePredictor, Input, Path
-import inference_propainter_api as propainter
+import inference_propainter as propainter
 
 
 class Predictor(BasePredictor):
