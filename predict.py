@@ -176,10 +176,18 @@ class Predictor(BasePredictor):
 
             # Restore audio from original video
             out_video_with_audio = self.add_audio_to_video(str(video), out_video, temp_dir)
+
+            # Copy files to permanent location before temp dir is deleted
+            import shutil
+            final_out = out_video.replace('.mp4', '_with_audio.mp4')
+            shutil.copy2(out_video_with_audio, final_out)
+
             if return_input_video:
                 in_video_with_audio = self.add_audio_to_video(str(video), in_video, temp_dir)
-                return [Path(in_video_with_audio), Path(out_video_with_audio)]
-            return [Path(out_video_with_audio)]
+                final_in = in_video.replace('.mp4', '_with_audio.mp4')
+                shutil.copy2(in_video_with_audio, final_in)
+                return [Path(final_in), Path(final_out)]
+            return [Path(final_out)]
 
     def add_audio_to_video(self, source_video, target_video, temp_dir):
         """Add audio from source video to target video using ffmpeg."""
