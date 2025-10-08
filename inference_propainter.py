@@ -339,7 +339,10 @@ def infer(device, fix_raft, fix_flow_complete, model, video, mask, output, resiz
             pred_flows_bi, _ = fix_flow_complete.forward_bidirect_flow(gt_flows_bi, flow_masks)
             pred_flows_bi = fix_flow_complete.combine_flow(gt_flows_bi, pred_flows_bi, flow_masks)
             torch.cuda.empty_cache()
-            
+
+        # Clean up flow computation tensors
+        del gt_flows_bi
+        torch.cuda.empty_cache()
 
         # ---- image propagation ----
         masked_frames = frames * (1 - masks_dilated)
@@ -375,8 +378,11 @@ def infer(device, fix_raft, fix_flow_complete, model, video, mask, output, resiz
             updated_frames = frames * (1 - masks_dilated) + prop_imgs.view(b, t, 3, h, w) * masks_dilated
             updated_masks = updated_local_masks.view(b, t, 1, h, w)
             torch.cuda.empty_cache()
-            
-    
+
+        # Clean up propagation tensors
+        del masked_frames
+        torch.cuda.empty_cache()
+
     ori_frames = frames_inp
     comp_frames = [None] * video_length
 
@@ -417,11 +423,13 @@ def infer(device, fix_raft, fix_flow_complete, model, video, mask, output, resiz
                     + ori_frames[idx] * (1 - binary_masks[i])
                 if comp_frames[idx] is None:
                     comp_frames[idx] = img
-                else: 
+                else:
                     comp_frames[idx] = comp_frames[idx].astype(np.float32) * 0.5 + img.astype(np.float32) * 0.5
-                    
+
                 comp_frames[idx] = comp_frames[idx].astype(np.uint8)
-        
+
+        # Aggressive memory cleanup
+        del pred_img, binary_masks, selected_imgs, selected_masks, selected_update_masks, selected_pred_flows_bi
         torch.cuda.empty_cache()
                 
     # save each frame

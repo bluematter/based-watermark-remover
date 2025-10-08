@@ -121,14 +121,14 @@ class Predictor(BasePredictor):
         width: int = Input(description="Width of the processing video.", default=-1),
         mask_dilation: int = Input(description="Mask dilation for video and flow masking.", default=4),
         ref_stride: int = Input(description="Stride of global reference frames.", default=10),
-        neighbor_length: int = Input(description="Length of local neighboring frames.", default=10),
-        subvideo_length: int = Input(description="Length of sub-video for long video inference.", default=80),
+        neighbor_length: int = Input(description="Length of local neighboring frames. Reduce to 5 if running out of memory.", default=10),
+        subvideo_length: int = Input(description="Length of sub-video for long video inference. Lower values use less memory.", default=30),
         raft_iter: int = Input(description="Iterations for RAFT inference.", default=20),
         mode: str = Input(description="Modes: video inpainting / video outpainting. If you want to do video inpainting, you need a mask. For video outpainting, you need to set scale_h and scale_w, and mask is ignored.", choices=['video_inpainting', 'video_outpainting'], default='video_inpainting'),
         scale_h: float = Input(description="Outpainting scale of height for video_outpainting mode.", default=1.0),
         scale_w: float = Input(description="Outpainting scale of width for video_outpainting mode.", default=1.0),
         save_fps: int = Input(description="Frames per second.", default=24),
-        fp16: bool = Input(description="Use fp16 (half precision) during inference. Default: fp32 (single precision).", default=False)
+        fp16: bool = Input(description="Use fp16 (half precision) during inference. Enabled by default to save memory.", default=True)
         
     ) -> List[Path]:
         """Run a single prediction on the model"""
