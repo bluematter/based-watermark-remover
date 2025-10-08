@@ -174,6 +174,35 @@ class Predictor(BasePredictor):
                     mode, scale_h, scale_w, save_fps, save_frames, fp16
                 )
 
-        if return_input_video:
-            return [Path(in_video), Path(out_video)]
-        return [Path(out_video)]
+            # Restore audio from original video
+            out_video_with_audio = self.add_audio_to_video(str(video), out_video, temp_dir)
+            if return_input_video:
+                in_video_with_audio = self.add_audio_to_video(str(video), in_video, temp_dir)
+                return [Path(in_video_with_audio), Path(out_video_with_audio)]
+            return [Path(out_video_with_audio)]
+
+    def add_audio_to_video(self, source_video, target_video, temp_dir):
+        """Add audio from source video to target video using ffmpeg."""
+        # Check if source video has audio
+        check_audio_cmd = [
+            'ffprobe', '-v', 'error', '-select_streams', 'a:0',
+            '-show_entries', 'stream=codec_type', '-of', 'csv=p=0', source_video
+        ]
+        result = subprocess.run(check_audio_cmd, capture_output=True, text=True)
+
+        if result.stdout.strip() != 'audio':
+            # No audio in source, return target as-is
+            print("No audio track found in source video, returning video without audio")
+            return target_video
+
+        # Merge audio from source with video from target
+        output_with_audio = os.path.join(temp_dir, f"output_with_audio_{os.path.basename(target_video)}")
+        merge_cmd = [
+            'ffmpeg', '-i', target_video, '-i', source_video,
+            '-c:v', 'copy', '-c:a', 'aac', '-map', '0:v:0', '-map', '1:a:0',
+            '-shortest', '-y', output_with_audio
+        ]
+        subprocess.run(merge_cmd, check=True, capture_output=True)
+        print(f"Added audio from source video to output")
+
+        return output_with_audio
